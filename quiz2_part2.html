@@ -1,0 +1,60 @@
+<html>
+  <style>
+    p { font-family: Arial;
+        font-style: oblique;}
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script type="text/javascript">
+    var result;
+    function getCookie(cname) {
+        // This function refers from http://www.w3schools.com/js/js_cookies.asp
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    $(document).ready(function()
+    {
+      var tmp = getCookie("saved");
+      if(tmp!="")
+      {
+        tmp = unescape(tmp);
+        result = tmp.split(',');
+        for(var i=0;i<result.length;i++)
+        {
+          $("#show").append("<p>"+result[i]+"</p>");
+        }
+      }
+      $("#get_title").click(function(){
+        $("#get_title").text("change it");
+        $.get("http://www.mattbowytz.com/simple_api.json", {"data":"quizData"}, get_callback)
+      });
+    });
+    function get_callback(ret)
+    {
+      result = ret.data;
+      for(var i=0;i<result.length;i++)
+      {
+        $("#show").append("<p>"+result[i]+"</p>");
+      }
+      $("#keep_div").append("<button id='keep_btn' style='color:green'>Keep It!</button>");
+      $("#keep_div").click(function(){
+        temp = escape(result);
+        document.cookie = "saved="+temp;
+      });
+    }
+  </script>
+  <body>
+    <button id="get_title" style="color:blue">Get Title</button>
+    <div>
+      <p id="show" style="font-style: normal;">Results:</p>
+    </div>
+    <div id="keep_div">
+    </div>
+  </body>
+</html>
